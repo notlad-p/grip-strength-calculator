@@ -12,9 +12,9 @@ import ReactSpeedometer from "react-d3-speedometer";
 import { useState } from "react";
 import CodeIcon from "./CodeIcon";
 
-function lerp(start: number, end: number, factor: number) {
-  return start + (end - start) * factor;
-}
+// function lerp(start: number, end: number, factor: number) {
+//   return start + (end - start) * factor;
+// }
 
 // TODO: ask what text to display after calculating
 // TODO: show all percentiles chart under? (and where they fall)
@@ -59,7 +59,11 @@ export default function App() {
 
     // find age less than `maxAge`, unless over 100
     // loop keys that start with "P" into array & set segment stops
-    let ageData = sexData.find((val) => val.maxAge > age);
+    let ageData = sexData.find((val) => {
+      if (val.maxAge) {
+        return val.maxAge > Number(age);
+      }
+    });
 
     // if age is 100+
     if (!ageData) {
@@ -67,7 +71,7 @@ export default function App() {
     }
 
     const min = Number(ageData["P5"]);
-    const mid = Number(ageData["P50"]);
+    // const mid = Number(ageData["P50"]);
     const max = Number(ageData["P95"]);
 
     let value = Number(gripStrength);
@@ -117,7 +121,10 @@ export default function App() {
         <div className="max-w-48 flex flex-col gap-3">
           <NativeSelect
             value={sex}
-            onChange={(event) => setSex(event.currentTarget.value)}
+            onChange={(event) => {
+              // @ts-ignore
+              setSex(event.currentTarget.value);
+            }}
             label="Sex"
             data={[
               { label: "Male", value: "male" },
